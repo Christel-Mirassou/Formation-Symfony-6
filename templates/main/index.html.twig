@@ -1,19 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MainController!{% endblock %}
+{% block title %}Hello MainController!
+{% endblock %}
 
 {% block header %}
-    {{ parent() }}
-    <section class="bg-black h-100 p-5">
-        <div class="text-white text-center h-100">
-            <h1 class="display-3 font-weight-bold m-0">SensioTV+</h1>
-        </div>
-    </section>
+	{{ parent() }}
+	<section class="bg-black h-100 p-5">
+		<div class="text-white text-center h-100">
+			<h1 class="display-3 font-weight-bold m-0">SensioTV+</h1>
+		</div>
+	</section>
 {% endblock %}
 
 {% block body %}
-    <section>
-        <h2 class="text-center">Latest movies:</h2>
-       
-    </section>
+	<section>
+		<h2 class="text-center">Latest movies:</h2>
+		<div class="row row-cols-3">
+			{% for movie in movies %}
+				<div class="col">
+					<div class="card w-75">
+						<img src="{{ movie.poster }}" alt="{{ movie.poster }}">
+						<div>
+							<h5 class="card-title">{{ movie.title }}</h5>
+							<p class="card-text">Release date:
+								{{ movie.releasedAt|date('Y/m/d') }}</p>
+						</div>
+					</div>
+				</div>
+			{% else %}
+				<p>No movies in database yet...</p>
+			{% endfor %}
+		</div>
+	</section>
 {% endblock %}

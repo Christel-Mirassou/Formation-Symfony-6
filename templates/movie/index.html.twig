@@ -11,12 +11,24 @@
 
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Availlable movies</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/wamp64/www/formation-Symfony-6/src/Controller/MovieController.php'|file_link(0) }}">src/Controller/MovieController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/wamp64/www/formation-Symfony-6/templates/movie/index.html.twig'|file_link(0) }}">templates/movie/index.html.twig</a></code></li>
-    </ul>
+    <section class="row row-cols-3 mt-5">
+        {% for movie in movies %}
+            <div class="col">
+                <a href="{{ path('app_movie_details', {'id': movie.id}) }}">
+                    <div class="card w-75">
+                        <img src="{{ movie.poster }}" alt="{{ movie.poster }}">
+                        <div>
+                            <h5 class="card-title">{{ movie.title }}</h5>
+                            <p class="card-text">Released date: {{ movie.releasdAt|date('Y/m/d') }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% else %}
+            <p>No movies in database yet...</p>
+        {% endfor %}
+    </section>
 </div>
 {% endblock %}
