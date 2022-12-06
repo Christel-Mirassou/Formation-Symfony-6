@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Book;
+use App\Form\BookType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/book')]
 class BookController extends AbstractController
 {
-    #[Route('/book', name: 'app_book_index')]
+    #[Route('', name: 'app_book_index')]
     public function index(): Response
     {
         return $this->render('book/index.html.twig', [
@@ -31,11 +34,29 @@ class BookController extends AbstractController
     // #[Route('/book/id/{id<\d+>?1}', name: 'app_book_details')]   //valeur par defaut dans la route sans l'attribut defaults mais en gardant le requirements (qui est optionnel)
     // public function details($id = 1): Response   //valeur par défaut dans la fonction php
     // #[Route('/book/id/{id<\d+>?1}', name: 'app_book_details', methods: ['POST'])]   //cette route ne pourra plus être appelée que par la méthode POST ce qui cause une erreur 405 (not allowed)
-    #[Route('/book/{id<\d+>?1}', name: 'app_book_details', methods: ['GET', 'POST'])]
+    #[Route('/{id<\d+>?1}', name: 'app_book_details', methods: ['GET', 'POST'])]
     public function details(int $id): Response
     {
         return $this->render('book/index.html.twig', [
             'controller_name' => $id,
         ]);
     }
+    
+    #[Route('/new', name: 'app_book_new')]
+    public function new(): Response
+    {
+        $book = new Book();
+        $form = $this->createForm(BookType::class, $book);
+        
+        // return $this->render('book/new.html.twig', [
+        //     'form' => $form->createView(),
+        // ]);
+
+        //Nouvelle version de Symfony pour la gestion des formulaires
+        return $this->renderForm('book/new.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+
 }

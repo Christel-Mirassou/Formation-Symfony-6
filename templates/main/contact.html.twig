@@ -1,17 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ContactController!{% endblock %}
+{% block title 'Contact' %}
 
 {% block body %}
 
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Contact</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/wamp64/www/formationSymfony6/src/Controller/MainController.php'|file_link(0) }}">src/Controller/MainController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/wamp64/www/formationSymfony6/templates/main/contact.html.twig'|file_link(0) }}">templates/main/contact.html.twig</a></code></li>
-    </ul>
+        <section class="container">
+			{{ form_start(form) }}
+			{{ form_widget(form) }}
+			<button type="submit" class="btn btn-primary">Send Message</button>
+			{{ form_end(form) }}
+		</section>
 </div>
 {% endblock %}

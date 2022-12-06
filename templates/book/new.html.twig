@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'New Book' %}
+
+{% block body %}
+
+
+	<div class="example-wrapper">
+		<h1>New Book</h1>
+		{# VERSION SIMMPLE #}
+        {# <section class="container">
+			{{ form_start(form) }}
+			{{ form_widget(form) }}
+			<button type="submit" class="btn btn-primary">Create</button>
+			{{ form_end(form) }}
+		</section> #}
+
+        {# VERSION DETAILLEE #}
+		<section class="container">
+			{{ form_start(form) }}
+			{{ form_row(form.title) }}
+			{{ form_row(form.isbn) }}
+			{{ form_row(form.author) }}
+			{{ form_row(form.releasedAt) }}
+            <div class="input-group">
+                {{ form_label(form.plot, 'Plot sumary') }}
+                {{ form_widget(form.plot) }}
+                {{ form_errors(form.plot) }}
+            </div>
+			{{ form_row(form.is_robot, {'label': 'Are you a robot?'}) }}
+			<button type="submit" class="btn btn-primary">Create</button>
+			{{ form_end(form) }}
+		</section>
+	</div>
+{% endblock %}

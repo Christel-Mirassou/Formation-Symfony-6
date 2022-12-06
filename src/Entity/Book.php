@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -22,6 +23,10 @@ class Book
     #[ORM\Column(length: 20)]
     private ?string $isbn = null;
 
+    #[Assert\AtLeastOneOf(([
+        new Assert\NotBlank,
+        new Assert\Length(min: 3, max: 255),
+    ]))]  //contraintes de validation qui doivent touttes êre validées
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $author = null;
 
@@ -31,6 +36,7 @@ class Book
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $plot = null;
 
+    #[Assert\Valid] //contrainte qui est utile pour une relation si dans l'autre entité reliée il y a des contraintes a valider (voir l'entité Comment)
     #[ORM\OneToMany(mappedBy: 'book', targetEntity: Comment::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $comments;
 
