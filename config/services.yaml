@@ -10,6 +10,13 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            string $confKey: 'foo'
+
+    # _instanceof:
+    #     App\Notifier\Factory\IterableNotificationFactoryInterface:
+    #         tags: [{ name: app.notification_factory }]
+    #   Ces 3 lignes peuvent être supprimer à cause de l'ajout dans le fichier IterableNotificationFactoryInterface de l'attribut #[AutoconfigureTag(name: 'app.notification')] avant l'interface
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -22,3 +29,20 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # app.my_service:
+    #     class: App\MyService
+    #     arguments:
+    #         $manager: '@doctrine.orm.default_entity_manager'
+    #         $confKey: 'foo'
+    #     Cette configuration ne marchera pas à cause de l'autowiring
+    # =====>
+    # App\MyService:
+    #     arguments:
+    #         # $manager: '@doctrine.orm.default_entity_manager'     #Cette ligne n'est pas obligatoire car l'entityManager est déjà un service et grace à l'autowiring il le retrouve tout seul
+    #         $confKey: 'foo'    Cette valeur si elle est utilisée plusieurs fois dans différents services on peut la "binder" et à chaque fois que Symfony en aura besoin il ira la retrouver voir ligne 13
+
+
+    App\Notifier\Factory\ChaineNotificationFactory:
+        arguments:
+            $factories: !tagged_iterator app.notification_factory   #Permet d'injecter dans le service toutes les factories (array) regroupées sous le tag défini ligne 18, 1 pour chaque notifier
