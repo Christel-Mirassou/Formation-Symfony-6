@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Consumer\OmdbApiConsumer;
 use App\Entity\Movie;
+use App\Provider\MovieProvider;
 use App\Repository\MovieRepository;
+use App\Transformer\OmdbMovieTransformer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,4 +39,40 @@ class MovieController extends AbstractController
     //         'movie' => $movie,
     //     ]);
     // }
+
+    // ROUTE qui permet d'utiiser l'API OMDB et aller chercher des films
+
+    // 1) Après la création du service Consumer
+    //
+    // #[Route('/omdb/{title}', name: 'app_movie_omdb')]
+    // public function omdb(string $title, OmdbApiConsumer $consumer)
+    // {
+    //     // dd($consumer->consume('t', $title));
+    //     return $this->render('movie/details.html.twig', [
+    //         'movie' => new Movie(),
+    //     ]);
+    // }
+    
+    // 2) Après la création du service Transformer
+    //
+    // #[Route('/omdb/{title}', name: 'app_movie_omdb')]
+    // public function omdb(string $title, OmdbApiConsumer $consumer, OmdbMovieTransformer $transformer)
+    // {
+    //     $data = $consumer->consume('t', $title);
+    //     $movie = $transformer->transform($data);
+
+    //     return $this->render('movie/details.html.twig', [
+    //         'movie' => $movie,
+    //     ]);
+    // }
+
+    // 3) Après la création du Provider qui va centraliser tout ce qui se passe avant et d'envoyer tout en BDD
+    #[Route('/omdb/{title}', name: 'app_movie_omdb')]
+    public function omdb(string $title, MovieProvider $provider)
+    {
+        return $this->render('movie/details.html.twig', [
+            'movie' => $provider->getMovie(OmdbApiConsumer::MODE_TITLE, $title),
+        ]);
+    }
+
 }

@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    items_per_page: 20
+    # env(DATABASE_URL): 'foo'  # A éviter de faire car par sécure
 
 services:
     # default configuration for services in *this* file
@@ -12,7 +14,12 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             string $confKey: 'foo'
+            int $itemsPerPage: '%items_per_page%'   #valeur par défaut définie dans les paramètres que l'on peut appeler n'import où maintenant
+            # Permet de récupérer la version du symfony que l'on veut dumper dans le HelloControler comme une variable d'environnement (env.local)
+            string $sfVersion: '%env(key:require:key:symfony:key:extra:json:file:resolve:COMPOSER_PATH)%'   
 
+
+            
     # _instanceof:
     #     App\Notifier\Factory\IterableNotificationFactoryInterface:
     #         tags: [{ name: app.notification_factory }]

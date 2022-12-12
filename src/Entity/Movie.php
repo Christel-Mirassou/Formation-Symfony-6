@@ -31,7 +31,7 @@ class Movie
     #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2, nullable: true)]
     private ?string $price = null;
 
-    #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: 'movies')]
+    #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: 'movies', cascade: ['persist'] )]
     private Collection $genres;
 
     public function __construct()

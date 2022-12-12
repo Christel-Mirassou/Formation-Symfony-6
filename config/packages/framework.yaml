@@ -3,6 +3,18 @@ framework:
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
     http_method_override: false
+    # configuration de l'http_client de Symfony
+    http_client:
+        # on veut créer un client scopé (cad un client dédié)
+        scoped_clients:
+            # ce client va s'appeler omdb_client
+            omdb_client:
+                # ce client sera restreint par une uri dans toutes ses recherches (c'est pour cela que dans le consumer il n'y a pas d'uri ligne 30)
+                base_uri: 'http://www.omdbapi.com/'
+                #  on ajoute un query parameter qui est la clé api (token que l'on en peut mettre "en dur" ici, pour des raisons de sécurité)
+                query:
+                    # on va utiliser donc une varaible d'environnement
+                    apikey: '%env(string:OMDB_API_KEY)%'
 
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.

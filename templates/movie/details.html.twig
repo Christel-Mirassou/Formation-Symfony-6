@@ -8,12 +8,15 @@
 
 	<div class="example-wrapper">
 		{% if movie is not null %}
-			<h1>Titre :
-				{{ movie.title }}</h1>
+
+			<h1 class="mb-5">Movie :	{{ movie.title }}</h1>
+			<img src="{{ movie.poster }}" alt="{{ movie.title }}" class="float-end">
 			<ul>
+				<li>Id : {{ movie.id }}</li>
 				<li>Réalisé le :
 					{{ movie.releasedAt|date("d M Y") }}</li>
-				<li>Genres : {{ movie.genres|map(genre => genre.name|join(', ') }}</li>
+				<li>Country : {{ movie.country }}</li>
+				<li>Genres : {{ movie.genres|map(genre => genre.name)|join(', ') }}</li>
 				
 				{#   OU Mais ici il faut ajouter dans l'entité Genre un __toString    #}
 				{#      <li>Genres : {{ movie.genres|join(', ') }}</li>     #}
