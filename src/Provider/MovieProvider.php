@@ -7,6 +7,8 @@ use App\Consumer\OmdbApiConsumer;
 use App\Repository\MovieRepository;
 use App\Transformer\OmdbMovieTransformer;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Security;
 
 class MovieProvider
 {
@@ -17,7 +19,9 @@ class MovieProvider
     public  function __construct(
         private MovieRepository $repository,
         private OmdbApiConsumer $consumer,
-        private OmdbMovieTransformer $transformer
+        private OmdbMovieTransformer $transformer,
+        private AuthorizationCheckerInterface $checker, //pour vérifier le role d'un user
+        private Security $security     //ici on injecte le composant Security en entier
     ) {
     }
 
@@ -53,6 +57,21 @@ class MovieProvider
 
             return $movie;
         }
+
+        // AUTHORIZATION :
+
+        // 1)Utilisation du service d'AuthorizationCheckerInterface
+        // if($this->checker->isGranted('ROLE_ADMIN')){
+        //     //
+        // }
+
+        // 2)Utilisation du composant SECURITY
+        // $user = $this->security->getUser();
+        // if($this->security->isGranted){
+        //     //
+        // }
+
+
 
         //On affiche un message dans le terminal disant que le film n'existe pas en BDD et qu'on le sauvegarde en BDD
         // $this->sendIo('section', "Movie not found in database, saving");

@@ -2,14 +2,15 @@
 
 namespace App\Controller;
 
-use App\Consumer\OmdbApiConsumer;
 use App\Entity\Movie;
 use App\Provider\MovieProvider;
+use App\Consumer\OmdbApiConsumer;
 use App\Repository\MovieRepository;
 use App\Transformer\OmdbMovieTransformer;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/movie')]
 class MovieController extends AbstractController
@@ -22,6 +23,7 @@ class MovieController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_MODERATOR')]
     #[Route('/{id<\d+>}', name: 'app_movie_details')]
     public function details(int $id, MovieRepository $movieRepository): Response
     {
@@ -67,11 +69,19 @@ class MovieController extends AbstractController
     // }
 
     // 3) Après la création du Provider qui va centraliser tout ce qui se passe avant et d'envoyer tout en BDD
+    // #[IsGranted('ROLE_ADMIN')]  //Cette ligne a exactement le même effet que la ligne 75 mais est plus efficace
     #[Route('/omdb/{title}', name: 'app_movie_omdb')]
     public function omdb(string $title, MovieProvider $provider)
     {
+        // $this->denyAccessUnlessGranted('ROLE_ADMIN');     //il est préférable d'utiliser l'attribut à la ligne 71
+
+        $movie = $provider->getMovie(OmdbApiConsumer::MODE_TITLE, $title);
+
+        //Ici on définit la possibilité pour un utilisateur de pouvoir voir ou pas un film
+        $this->denyAccessUnlessGranted('movie.view', $movie);
+
         return $this->render('movie/details.html.twig', [
-            'movie' => $provider->getMovie(OmdbApiConsumer::MODE_TITLE, $title),
+            'movie' => $movie,
         ]);
     }
 

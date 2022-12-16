@@ -41,9 +41,19 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 
+    role_hierarchy:
+        ROLE_MODERATOR: ROLE_USER
+        ROLE_PROVIDER: ROLE_USER
+        ROLE_ADMIN:
+            - ROLE_MODERATOR
+            - ROLE_PROVIDER
+
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        # - { path : */login, roles: PUBLIC_ACCESS }   # ici n'importe quel utilisateur peut accéder à la page de login
+        # - { path: */, roles: IS_AUTHENTICATED_FULLY} # ici seul les utilisateurs qui se seront authentifiés auront accès aux autres pages du site
+        # - { path: */, roles: IS_AUTHENTICATED_FULLY, allow_if: "request.headers.get('X-Header-Foo') == 'toto' and subject.getTitle() == 'Star Wars' "} #on peut créé des autorisations ou non de n'importe quelle sorte avec des expressions très complexes
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
