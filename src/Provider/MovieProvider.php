@@ -2,13 +2,15 @@
 
 namespace App\Provider;
 
+use App\Entity\User;
 use App\Entity\Movie;
 use App\Consumer\OmdbApiConsumer;
 use App\Repository\MovieRepository;
 use App\Transformer\OmdbMovieTransformer;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class MovieProvider
 {
@@ -21,7 +23,8 @@ class MovieProvider
         private OmdbApiConsumer $consumer,
         private OmdbMovieTransformer $transformer,
         private AuthorizationCheckerInterface $checker, //pour vérifier le role d'un user
-        private Security $security     //ici on injecte le composant Security en entier
+        //private Security $security,     //ici on injecte le composant Security en entier
+        private TokenStorageInterface $storage, //Plutot que d'injecter Security pour le user on peut seulement injecter le Token
     ) {
     }
 
@@ -79,6 +82,21 @@ class MovieProvider
 
         //3) On transforme les données de l'API en objet Movie et on l'envoie en BDD
         $movie = $this->transformer->transform($data);
+
+        // Version avec SECURITY d'injecter
+        //on vérifie que le user est bien en BDD
+        // if (($user = $this->security->getUser()) instanceof User) {
+        //     //on permet aux utilisateurs d'ajouter un film en BDD avec leur propre id
+        //     $movie->setAddedBy($user);
+        // }
+
+        //Version avec Token d'injecter
+        //on vérifie que le user est bien en BDD
+        if (($user = $this->storage->getToken()?->getUser()) instanceof User) {
+            //on permet aux utilisateurs d'ajouter un film en BDD avec leur propre id
+            $movie->setAddedBy($user);
+        }
+
         $this->repository->save($movie, true);
 
         //On affiche un message dans le terminal disant que le film a été sauvegardé en BDD

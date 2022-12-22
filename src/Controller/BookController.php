@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Form\BookType;
+use App\Security\Voter\BookVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,10 +52,10 @@ class BookController extends AbstractController
         $form = $this->createForm(BookType::class, $book);
         $form->handleRequest($request);
         
-        $errrors = $validator->validate($book, null, ['Book']);
-
-        if($this->isGranted('ROLE_ADMIN')){
-            //
+        if($form->isSubmitted()){
+            $errrors = $validator->validate($book, null, ['Book']);
+            //ligne qui utilise le BookVoter
+            $this->denyAccessUnlessGranted(BookVoter::VIEW, $book);
         }
 
         // return $this->render('book/new.html.twig', [

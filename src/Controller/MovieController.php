@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Movie;
 use App\Provider\MovieProvider;
 use App\Consumer\OmdbApiConsumer;
+use App\Security\Voter\MovieVoter;
 use App\Repository\MovieRepository;
 use App\Transformer\OmdbMovieTransformer;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,11 +24,12 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_MODERATOR')]
+    // #[IsGranted('ROLE_MODERATOR')]
     #[Route('/{id<\d+>}', name: 'app_movie_details')]
     public function details(int $id, MovieRepository $movieRepository): Response
     {
         $movie = $movieRepository->find($id);
+        $this->denyAccessUnlessGranted(MovieVoter::VIEW, $movie);
         
         return $this->render('movie/details.html.twig', [
             'movie' => $movie,
@@ -78,7 +80,7 @@ class MovieController extends AbstractController
         $movie = $provider->getMovie(OmdbApiConsumer::MODE_TITLE, $title);
 
         //Ici on définit la possibilité pour un utilisateur de pouvoir voir ou pas un film
-        $this->denyAccessUnlessGranted('movie.view', $movie);
+        $this->denyAccessUnlessGranted(MovieVoter::VIEW, $movie);
 
         return $this->render('movie/details.html.twig', [
             'movie' => $movie,
