@@ -17,7 +17,8 @@ services:
             int $itemsPerPage: '%items_per_page%'   #valeur par défaut définie dans les paramètres que l'on peut appeler n'import où maintenant
             # Permet de récupérer la version du symfony que l'on veut dumper dans le HelloControler comme une variable d'environnement (env.local)
             string $sfVersion: '%env(key:require:key:symfony:key:extra:json:file:resolve:COMPOSER_PATH)%'   
-
+            #pour mettre le site en maintenance
+            bool $isMaintenance: '%env(bool:APP_MAINTENANCE)%'
 
             
     # _instanceof:
